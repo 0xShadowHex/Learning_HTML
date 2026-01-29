@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dark Notification</title>
+<style>
+    #notification {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        min-width: 220px;
+        background: #1e1e1e;
+        color: #ffffff;
+        padding: 14px 20px;
+        border-radius: 6px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+        pointer-events: none;
+    }
+
+    #notification.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    #notification.fade-out {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .text {
+        flex: 1;
+    }
+
+    .close {
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0 4px;
+        line-height: 1;
+    }
+
+    .close:hover {
+        color: #ddd;
+    }
+</style>
+</head>
+<body>
+
+<div id="notification">
+    <span class="text" id="msg"></span>
+    <button class="close" onclick="hide()">×</button>
+</div>
+
+<script>
+const notification = document.getElementById('notification');
+const msg = document.getElementById('msg');
+let timeout;
+
+function show(text, duration = 2200) {
+    clearTimeout(timeout);
+    msg.textContent = text;
+    notification.classList.remove('fade-out');
+    notification.classList.add('show');
+
+    timeout = setTimeout(hide, duration);
+}
+
+function hide() {
+    notification.classList.add('fade-out');
+    setTimeout(() => {
+        notification.classList.remove('show', 'fade-out');
+    }, 320);
+}
+
+function runSequence() {
+    show("Compiling...", 1800);
+    setTimeout(() => {
+        hide();
+        setTimeout(() => {
+            show("Compiled", 5000); 
+        }, 400);
+    }, 1800);
+}
+
+// Run once on load (or remove this line if you want manual trigger)
+runSequence();
+
+// Optional: click anywhere to replay
+document.addEventListener('click', runSequence);
+</script>
+
+</body>
+</html>
